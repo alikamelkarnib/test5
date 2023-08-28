@@ -25,8 +25,9 @@ class _SignUpState extends State<SignUp> {
   Get.put(RegisterationController());
 
   LoginController loginController = Get.put(LoginController());
-
+  RegExp emailRegExp = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
   var isLogin = false.obs;
+  bool locked = true;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -54,11 +55,13 @@ class _SignUpState extends State<SignUp> {
                 height: 30,
               ),
                CustomTextfield(
-                    MultiValidator([
-                   RequiredValidator(errorText: "* Required"),
 
-
-                 ]),
+                     (value) {
+                   if (value!.isEmpty) {
+                     return "* Required";
+                   }
+                   return null;
+                 },
                  registerationController.nameController,
                   Icons.person,
                  false,
@@ -66,19 +69,24 @@ class _SignUpState extends State<SignUp> {
 
               ),
               CustomTextfield(
-                MultiValidator([
-                  RequiredValidator(errorText: "* Required"),
-                  EmailValidator(errorText: "Enter valid email id"),
-
-                ]),
+                    (value) {
+                  if (value!.isEmpty) {
+                    return "* Required";
+                  } else if (!emailRegExp.hasMatch(value)) {
+                    return "Email is invalid";
+                  } else {
+                    return null;
+                  }
+                },
                 registerationController.emailController,
                Icons.alternate_email,
                 false,
                 'Enter Email',
               ),
 
-              CustomTextfield(
-                MultiValidator([
+              TextFormField(
+                obscureText: locked,
+              validator:  MultiValidator([
                   RequiredValidator(errorText: "* Required"),
                   MinLengthValidator(6,
                       errorText: "Password should be atleast 6 characters"),
@@ -86,10 +94,20 @@ class _SignUpState extends State<SignUp> {
                       errorText:
                       "Password should not be greater than 15 characters")
                 ]),
-                registerationController.passwordController,
-               Icons.lock,
-                 true,
-                'Enter Password',
+               controller: registerationController.passwordController,
+                decoration: InputDecoration(
+                  prefixIcon: IconButton(
+                    icon: Icon(locked ? Icons.lock : Icons.lock_open, color: Constants.blackColor.withOpacity(.3),),
+
+                    onPressed: () {
+                      setState(() {
+                        locked = !locked;
+                      });
+                    },
+                  ),
+                  hintText: 'Enter a Password',
+                  border: InputBorder.none,
+                ),
 
               ),
 

@@ -18,20 +18,29 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
+
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
   late var txt='Everyone should\nlive with a little\nmore green.';
   RegisterationController registerationController =
   Get.put(RegisterationController());
 
   LoginController loginController = Get.put(LoginController());
+var flag =false;
 
-  var isLogin = false.obs;
+ var d=0.5;
 
   @override
   Widget build(BuildContext context) {
 
 
-    return Container(
+    return  GestureDetector(
+        onTap: (){     setState(() {
+          flag=false;
+          d=0.5;
+       //   FocusScope.of(context).unfocus();
+        });},
+
+  child:  Container(
 
       decoration: const BoxDecoration(
         image: DecorationImage(
@@ -41,11 +50,12 @@ class _SignInState extends State<SignIn> {
       ),
 
 child: Scaffold(
+  //resizeToAvoidBottomInset : false,
   backgroundColor: Colors.transparent,
       body:Stack(
      children:[
 Container(),
-       Container(
+   if(flag==false)    Container(
          padding: EdgeInsets.only(left: 30, top: 40),
 
 
@@ -58,7 +68,7 @@ Container(),
            ),
          ),
        ),
-       Container(
+    if(flag==false)   Container(
          padding: EdgeInsets.only(left: 30, top: 140),
 
          child: Text(
@@ -75,15 +85,18 @@ Container(),
 
 
       SingleChildScrollView(
+
        child:Form(
          autovalidateMode: AutovalidateMode.always,//check for validation while typing
         key: formkey,
+
     child: Container(
+
     padding: EdgeInsets.only(
     top: MediaQuery
         .of(context)
         .size
-        .height * 0.5),
+        .height * d),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -93,6 +106,13 @@ Container(),
                         children: [
 
       TextFormField(
+
+        onTap: (){     setState(() {
+
+          flag=true;
+          d=0.2;
+        });},
+
         validator: MultiValidator([
           RequiredValidator(errorText: "* Required"),
           EmailValidator(errorText: "Enter valid email id"),
@@ -100,7 +120,9 @@ Container(),
         ]),
         controller:loginController.emailController,
         obscureText: false,
+        autofocus: true,
         decoration: InputDecoration(
+
           filled: true,
           prefixIcon :Icon(Icons.alternate_email),
           fillColor: Colors.white,
@@ -118,9 +140,13 @@ Container(),
                 ),
 
                 TextFormField(
-                  onChanged: (text) {
-                    setState(() { txt='';});
-                  },
+                  autofocus: true,
+                  onTap: (){     setState(() {
+                    flag=true;
+                    d=0.2;
+
+                  });},
+
                   validator: MultiValidator([
                     RequiredValidator(errorText: "* Required"),
                     MinLengthValidator(6,
@@ -129,7 +155,7 @@ Container(),
                         errorText:
                         "Password should not be greater than 15 characters")
                   ]),
-                  controller: LoginController().passwordController,
+                  controller: loginController.passwordController,
                   obscureText: true,
                   decoration: InputDecoration(     prefixIcon:Icon (Icons.lock),
                     fillColor: Colors.white,
@@ -152,13 +178,21 @@ Row(
       Expanded(
 
       child: GestureDetector(
-      onTap: (){  if (formkey.currentState!.validate()) {
-        loginController.loginWithEmail();
+      onTap: (){ setState(() {
+        flag=false;
+        d=0.5;
+        FocusScope.of(context).unfocus();
+      });
+        if (formkey.currentState!.validate()) {
+          loginController.loginWithEmail();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Processing Data')),
         );
 
-      }},
+      }
+        else{
+          print("enter email and password");
+        }},
         child:Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(20),),
@@ -184,7 +218,15 @@ Row(
 
         Expanded(
           child: GestureDetector(
-          onTap: (){
+          onTap: (){   setState(() {
+            flag=false;
+            d=0.5;
+            FocusScope.of(context).unfocus();
+          });
+            registerationController.nameController.clear();
+            registerationController.emailController.clear();
+            registerationController.passwordController.clear();
+          registerationController.confirmPass.clear();
             Navigator.push(context,MaterialPageRoute(builder: (context){
               return SignUp();
             }),);
@@ -276,6 +318,6 @@ Row(
      ]
 
               ),
-    ) );
+    ) ));
   }
 }

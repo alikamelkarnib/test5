@@ -29,10 +29,23 @@ class LoginController extends GetxController {
 
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
+        print(json);
+        if(json['success']==false){
+          Get.back();
+          showDialog(
+              context: Get.context!,
+              builder: (context) {
+                return SimpleDialog(
+                  title: Text('faild'),
+                  contentPadding: EdgeInsets.all(20),
+                  children: [Text(json['message'].toString())],
+                );
+              });
+        }
         if (json['code'] == 0) {
-          var token = json['data']['Token'];
-          final SharedPreferences? prefs = await _prefs;
-          await prefs?.setString('token', token);
+       //   var token = json['data']['Token'];
+        //  final SharedPreferences? prefs = await _prefs;
+       //   await prefs?.setString('token', token);
 
           emailController.clear();
           passwordController.clear();

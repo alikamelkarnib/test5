@@ -20,6 +20,7 @@ class RegisterationController extends GetxController {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   Future<void> registerWithEmail() async {
+
     try {
       var headers = {'Content-Type': 'application/json'};
       var url = Uri.parse(
@@ -36,15 +37,17 @@ class RegisterationController extends GetxController {
 
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
+
         if (json['code'] == 0) {
           var token = json['data']['Token'];
-          print(token);
-          final SharedPreferences? prefs = await _prefs;
+         print(token);
+         final SharedPreferences? prefs = await _prefs;
 
           await prefs?.setString('token', token);
           nameController.clear();
           emailController.clear();
           passwordController.clear();
+          confirmPass.clear();
 
           Get.off(HomeScreen());
         } else {
@@ -58,8 +61,10 @@ class RegisterationController extends GetxController {
       showDialog(
           context: Get.context!,
           builder: (context) {
+
             return SimpleDialog(
-              title: Text('Error'),
+
+              title: Text('Register'),
               contentPadding: EdgeInsets.all(20),
               children: [Text(e.toString())],
             );
