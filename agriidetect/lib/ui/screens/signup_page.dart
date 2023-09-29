@@ -20,7 +20,7 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  GlobalKey<FormState> formkey = GlobalKey<FormState>();
+  GlobalKey<FormState> formkey1 = GlobalKey<FormState>();
   RegisterationController registerationController =
   Get.put(RegisterationController());
 
@@ -38,7 +38,7 @@ class _SignUpState extends State<SignUp> {
         child: SingleChildScrollView(
           child:Form(
             autovalidateMode: AutovalidateMode.always,//check for validation while typing
-            key: formkey,
+            key: formkey1,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,12 +112,12 @@ class _SignUpState extends State<SignUp> {
               ),
 
               CustomTextfield(
-                 (val){
-                  if(val!.isEmpty)
+                 (value){
+                  if(value!.isEmpty)
                     return '* Required';
-                  if(val != registerationController.passwordController.text)
+                  if(value != registerationController.passwordController.text)
                     return 'Not Match';
-                  return 'Confirm';
+
                 },
                 registerationController.confirmPass,
                 Icons.lock,
@@ -130,7 +130,11 @@ class _SignUpState extends State<SignUp> {
                 height: 10,
               ),
               GestureDetector(
-                onTap: () {registerationController.registerWithEmail();},
+                onTap: () {
+
+    if(formkey1.currentState!.validate()) {
+
+                registerationController.registerWithEmail();}},
                 child: Container(
                   width: size.width,
                   decoration: BoxDecoration(

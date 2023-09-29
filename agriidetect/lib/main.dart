@@ -2,6 +2,8 @@ import 'package:agriidetect/ui/screens/signin_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'models/camera.dart';
+
 
 
 
@@ -16,7 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const GetMaterialApp(
       title: 'Onboarding Screen',
-      home: SignIn(),
+      home: SetPhotoScreen(),
       debugShowCheckedModeBanner: false,
     );
   }

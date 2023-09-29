@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:agriidetect/ui/home.dart';
+import 'package:agriidetect/ui/screens/widgets/BottomNavBarState.dart';
 
 
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 import '../utils/api_endpoints.dart';
+import 'login_controller.dart';
 
 class RegisterationController extends GetxController {
   TextEditingController nameController = TextEditingController();
@@ -32,43 +34,28 @@ class RegisterationController extends GetxController {
 
       };
 
-      http.Response response =
-          await http.post(url, body: jsonEncode(body), headers: headers);
+      http.Response response = await http.post(url, body: jsonEncode(body), headers: headers);
 
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
 
-        if (json['code'] == 0) {
-          var token = json['data']['Token'];
-         print(token);
-         final SharedPreferences? prefs = await _prefs;
-
-          await prefs?.setString('token', token);
+        if (json['status']==true) {
+          Get.back();
+          showAlertDialog(Get.context!, "SUCCESS", "Please Sign in to your Account");
           nameController.clear();
           emailController.clear();
           passwordController.clear();
           confirmPass.clear();
 
-          Get.off(HomeScreen());
-        } else {
-          throw jsonDecode(response.body)["message"] ?? "Unknown Error Occured";
-        }
-      } else {
-        throw jsonDecode(response.body)["Message"] ?? "Unknown Error Occured";
+         Get.off(BottomNavBarState());
+
+        }   else{
+          showAlertDialog(Get.context!,"ERROR","Email already been used");
+      }
       }
     } catch (e) {
-      Get.back();
-      showDialog(
-          context: Get.context!,
-          builder: (context) {
+      showAlertDialog(Get.context!,"No Internet","Check your internet connection.");
 
-            return SimpleDialog(
-
-              title: Text('Register'),
-              contentPadding: EdgeInsets.all(20),
-              children: [Text(e.toString())],
-            );
-          });
     }
   }
 }

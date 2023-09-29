@@ -190,8 +190,8 @@ Row(
         );
 
       }
-        else{
-          print("enter email and password");
+        else if( loginController.passwordController.text==""|| loginController.emailController.text==""){
+          showAlertDialog(context,"ERROR","Some of the fields are missing");
         }},
         child:Container(
         decoration: BoxDecoration(

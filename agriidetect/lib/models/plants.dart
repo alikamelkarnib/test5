@@ -37,7 +37,7 @@ class Plant {
         rating: 4.5,
         humidity: 34,
         temperature: '23 - 34',
-        imageURL: 'assets/images/plant-one.png',
+        imageURL: 'assets/images/flower.jpg',
         isFavorated: true,
         decription:
         'This plant is one of the best plant. It grows in most of the regions in the world and can survive'
